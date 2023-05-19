@@ -1,6 +1,47 @@
 <?php
 
+use Kirby\Cms\Collection;
+
 return [
+  /** 
+   * Repeats items in a collection `$times` times 
+   */
+  'repeat' => function (int $times) {
+    $collection = [];
+
+    if ($times <= 0) { // 0 or negative, return empty collection
+      return new Collection();
+    }
+
+    if ($times <= 1) { // 1, return the same collection
+      return $this;
+    }
+
+    foreach (range(1, $times) as $_) { // loop through all items, create a new collection
+      foreach ($this as $item) {
+        $collection[] = $item;
+      }
+    }
+
+    // convert the array of chunks to a collection
+    $result = clone $this;
+    $result->data = $collection;
+
+    return $result;
+  },
+  /** 
+   * Fills a collection with the same items until target size is reached 
+   */
+  'fill' => function (int $target) {
+    $count = $this->count();
+
+    if ($target <= $count) {
+      return $this->limit($target);
+    }
+
+    $parts = ceil($target / $count);
+    return $this->repeat($parts)->limit($target);
+  },
   /**
    * Splits a Kirby collection into a given number of parts 
    */

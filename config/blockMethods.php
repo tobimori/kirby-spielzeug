@@ -2,14 +2,17 @@
 
 return [
   'attr' => function ($attr) {
-    $attr = array_merge_recursive($attr, ['class' => ['o-block'], 'data-block-id' => $this->id()]);
+    $attr = array_merge_recursive($attr, [
+      'class' => [option('tobimori.spielzeug.blocks.defaultClass')],
+      'data-block-id' => $this->id()
+    ]);
 
-    if ($this->blockId()->isNotEmpty()) {
-      $attr['id'] = $this->blockId();
+    if (($blockId = $this->content()->get(option('tobimori.spielzeug.blocks.idKey', 'blockId')))->isNotEmpty()) {
+      $attr['id'] = $blockId->value();
     }
 
-    $attr['data-prev-block'] = $this->prev() ? $this->prev()->type() : 'navigation';
-    $attr['data-next-block'] = $this->next() ? $this->next()->type() : 'footer';
+    $attr['data-prev-block'] = option('tobimori.spielzeug.blocks.getPrevBlock', fn ($block) => $block->prev() ? $block->prev()->type() : 'navigation')($this);
+    $attr['data-next-block'] = option('tobimori.spielzeug.blocks.getNextBlock', fn ($block) => $block->next() ? $block->next()->type() : 'footer')($this);
 
     $s = "";
     foreach ($attr as $key => $value) {
