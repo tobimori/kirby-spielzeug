@@ -1,0 +1,38 @@
+{
+  "name": "tobimori/kirby-spielzeug",
+  "description": "",
+  "type": "kirby-plugin",
+  "keywords": [
+    "kirby"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Tobias Möritz",
+      "email": "tobias@moeritz.io",
+      "homepage": "https://moeritz.io"
+    }
+  ],
+  "require": {
+    "php": ">=8.2.0",
+    "getkirby/composer-installer": "^1.2",
+    "bnomei/autoloader-for-kirby": "^1.9"
+  },
+  "require-dev": {
+    "getkirby/cms": "^3.9"
+  },
+  "scripts": {
+    "dist": "composer install --no-dev --optimize-autoloader"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "allow-plugins": {
+      "getkirby/composer-installer": true
+    }
+  },
+  "autoload": {
+    "files": [
+      "helpers.php"
+    ]
+  }
+}
