@@ -25,4 +25,5 @@ Kirby::plugin('tobimori/spielzeug', autoloader(__DIR__)->toArray([
   'siteMethods' => require_once __DIR__ . '/config/siteMethods.php',
   'blockMethods' => require_once __DIR__ . '/config/blockMethods.php',
   'collectionMethods' => require_once __DIR__ . '/config/collectionMethods.php',
+  'fieldMethods' => require_once __DIR__ . '/config/fieldMethods.php',
 ]));
