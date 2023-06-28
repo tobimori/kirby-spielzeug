@@ -1,7 +1,7 @@
 {
   "name": "tobimori/kirby-spielzeug",
   "description": "The helping hand for my Kirby Baukasten starterkit - Useful helpers & tools I use for my projects",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "kirby-plugin",
   "keywords": [
     "kirby",
