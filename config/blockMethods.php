@@ -4,7 +4,7 @@ return [
   'attr' => function ($attr) {
     $attr = array_merge_recursive($attr, [
       'class' => [option('tobimori.spielzeug.blocks.defaultClass')],
-      'data-block-id' => $this->id()
+      'data-block' => $this->type()
     ]);
 
     if (($blockId = $this->content()->get(option('tobimori.spielzeug.blocks.idKey', 'blockId')))->isNotEmpty()) {
