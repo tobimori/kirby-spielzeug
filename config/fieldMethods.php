@@ -1,6 +1,7 @@
 <?php
 
-use Kirby\Cms\Field;
+use Kirby\Content\Field;
+use Kirby\Http\Url;
 use Kirby\Toolkit\Str;
 
 return [
@@ -8,6 +9,7 @@ return [
   // https://github.com/getkirby/kirby/blob/v4/develop/panel/src/components/Forms/Field/LinkField.vue#L127
   'linkType' => function (Field $field) {
     $val = $field->value();
+    if (empty($val)) return 'custom';
 
     if (Str::match($val, '/^(http|https):\/\//')) {
       return 'url';
@@ -44,8 +46,7 @@ return [
 
     switch ($type) {
       case 'url':
-        $url = parse_url($val);
-        return $url['hostname'] . ($url['path'] ?? "");
+        return Url::short($val);
       case 'page':
         $page = $field->toPage();
         if ($page) return $page->title();
