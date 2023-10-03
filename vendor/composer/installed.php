@@ -1,8 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'tobimori/kirby-spielzeug',
-        'pretty_version' => '1.2.1',
-        'version' => '1.2.1.0',
+        'pretty_version' => '2.0.0',
+        'version' => '2.0.0.0',
         'reference' => NULL,
         'type' => 'kirby-plugin',
         'install_path' => __DIR__ . '/../../',
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'bnomei/autoloader-for-kirby' => array(
-            'pretty_version' => '1.9.1',
-            'version' => '1.9.1.0',
-            'reference' => 'bb1a3e7a981138474fe4457fe5e68a6502e6ffd8',
+            'pretty_version' => '1.10.2',
+            'version' => '1.10.2.0',
+            'reference' => 'b3309ff419b7fb28354ac97a759fe1265aadc3e3',
             'type' => 'project',
             'install_path' => __DIR__ . '/../bnomei/autoloader-for-kirby',
             'aliases' => array(),
@@ -38,17 +38,17 @@
             'dev_requirement' => false,
         ),
         'symfony/finder' => array(
-            'pretty_version' => 'v6.2.7',
-            'version' => '6.2.7.0',
-            'reference' => '20808dc6631aecafbe67c186af5dcb370be3a0eb',
+            'pretty_version' => 'v6.3.5',
+            'version' => '6.3.5.0',
+            'reference' => 'a1b31d88c0e998168ca7792f222cbecee47428c4',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/finder',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'tobimori/kirby-spielzeug' => array(
-            'pretty_version' => '1.2.1',
-            'version' => '1.2.1.0',
+            'pretty_version' => '2.0.0',
+            'version' => '2.0.0.0',
             'reference' => NULL,
             'type' => 'kirby-plugin',
             'install_path' => __DIR__ . '/../../',

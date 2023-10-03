@@ -1,7 +1,7 @@
 {
   "name": "tobimori/kirby-spielzeug",
   "description": "The helping hand for my Kirby Baukasten starterkit - Useful helpers & tools I use for my projects",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "type": "kirby-plugin",
   "keywords": [
     "kirby",
@@ -36,6 +36,9 @@
   "autoload": {
     "files": [
       "helpers.php"
-    ]
+    ],
+    "psr-4": {
+      "tobimori\\Spielzeug\\": "classes"
+    }
   }
 }

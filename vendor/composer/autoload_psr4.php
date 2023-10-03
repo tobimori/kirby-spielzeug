@@ -6,6 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'tobimori\\Spielzeug\\' => array($baseDir . '/classes'),
     'Symfony\\Component\\Finder\\' => array($vendorDir . '/symfony/finder'),
     'Kirby\\' => array($vendorDir . '/getkirby/composer-installer/src'),
     'Bnomei\\' => array($vendorDir . '/bnomei/autoloader-for-kirby/classes'),

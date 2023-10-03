@@ -13,6 +13,10 @@ class ComposerStaticInit2b3a4670316c91277b00f23472716e7a
     );
 
     public static $prefixLengthsPsr4 = array (
+        't' => 
+        array (
+            'tobimori\\Spielzeug\\' => 19,
+        ),
         'S' => 
         array (
             'Symfony\\Component\\Finder\\' => 25,
@@ -28,6 +32,10 @@ class ComposerStaticInit2b3a4670316c91277b00f23472716e7a
     );
 
     public static $prefixDirsPsr4 = array (
+        'tobimori\\Spielzeug\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/classes',
+        ),
         'Symfony\\Component\\Finder\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/finder',
@@ -72,6 +80,7 @@ class ComposerStaticInit2b3a4670316c91277b00f23472716e7a
         'Symfony\\Component\\Finder\\Iterator\\SortableIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/SortableIterator.php',
         'Symfony\\Component\\Finder\\Iterator\\VcsIgnoredFilterIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/VcsIgnoredFilterIterator.php',
         'Symfony\\Component\\Finder\\SplFileInfo' => __DIR__ . '/..' . '/symfony/finder/SplFileInfo.php',
+        'tobimori\\Spielzeug\\Menu' => __DIR__ . '/../..' . '/classes/Menu.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

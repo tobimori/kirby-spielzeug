@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bnomei;
 
 use Closure;
+use Kirby\Toolkit\A;
 use Spyc;
 use Symfony\Component\Finder\Finder;
 
@@ -193,7 +194,6 @@ final class Autoloader
                         $key = substr($key, 0, -strlen($suffix));
                     }
                 }
-                $this->registry[$type][$key] = $class;
             }
             if (empty($key)) {
                 continue;
@@ -203,6 +203,9 @@ final class Autoloader
                 }
 
                 $key = strval($key); // in case key looks like a number but should be a string
+            }
+            if (!empty($class)) {
+                $this->registry[$type][$key] = $class;
             }
 
             if ($options['key'] === 'classname') {
@@ -257,6 +260,25 @@ final class Autoloader
             });
             $map = array_flip($map);
             $this->load($map, $this->options['dir'] . '/' . $options['folder']);
+
+            // load blueprints from classes
+            foreach ($map as $class => $file) {
+                // if instance of class has static method registerBlueprintExtension
+                if (class_exists($class) && method_exists($class, 'registerBlueprintExtension')) {
+                    // register blueprints now, using and empty array would prevent the loading later
+                    if (!array_key_exists('blueprints', $this->registry)) {
+                        $this->registry['blueprints'] = $this->blueprints();
+                    }
+                    // call registerBlueprintExtension
+                    $blueprint = $class::registerBlueprintExtension();
+                    // if blueprint is not empty
+                    if (!empty($blueprint)) {
+                        // merge with existing blueprint
+                        $this->registry['blueprints'] = array_merge_recursive($this->registry['blueprints'], $blueprint);
+                    }
+                }
+            }
+
             unset($this->registry[$type]['map']);
         }
 
@@ -335,21 +357,28 @@ final class Autoloader
     {
         $this->classes();
 
-        return array_merge_recursive([
-            'blueprints' => $this->blueprints(),
-            'collections' => $this->collections(),
-            'commands' => $this->commands(),
-            'controllers' => $this->controllers(),
-            'blockModels' => $this->blockModels(),
-            'pageModels' => $this->pageModels(),
-            'userModels' => $this->userModels(),
-            'snippets' => $this->snippets(),
-            'templates' => $this->templates(),
-            'translations' => $this->translations(),
+        // merge each on its own to allow cross loading between registries
+        // like a pageModel to load a blueprint
+        $types = [
+            fn () => ['blueprints'  => $this->blueprints()],
+            fn () => ['collections'  => $this->collections()],
+            fn () => ['commands'  => $this->commands()],
+            fn () => ['controllers'  => $this->controllers()],
+            fn () => ['blockModels'  => $this->blockModels()],
+            fn () => ['pageModels'  => $this->pageModels()],
+            fn () => ['userModels'  => $this->userModels()],
+            fn () => ['snippets'  => $this->snippets()],
+            fn () => ['templates'  => $this->templates()],
+            fn () => ['translations'  => $this->translations()],
+            fn () => ['api'  => ['routes' => $this->apiRoutes()]],
+            fn () => ['routes'  => $this->routes()],
+        ];
+        foreach ($types as $callback) {
+            $this->registry = array_merge_recursive($this->registry, $callback());
+        }
 
-            'api' => ['routes' => $this->routes('api')],
-            'routes' => $this->routes(),
-        ], $merge);
+        // merge on top but do not store in the registry
+        return array_merge_recursive($this->registry, $merge);
     }
 
     public function pascalToKebabCase(string $string): string
