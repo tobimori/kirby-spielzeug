@@ -33,19 +33,23 @@ class Menu
 			return [];
 		}
 
-		return static::$pages[] = [
+		$data = [
 			'label' => t($label, $label),
 			'link' => $link,
-			$icon && 'icon' => $icon,
 			'current' => $current ?? fn () =>
 			str_contains(static::path(), $link)
 		];
+
+		if ($icon) {
+			$data['icon'] = $icon;
+		}
+
+		return static::$pages[] = $data;
 	}
 
-	public static function site(string $label, string $icon = 'home'): array
+	public static function site(string $label = null, string $icon = null): array
 	{
-		return [
-			'label' => t($label, $label),
+		$data = [
 			'current' => function (string $id = null) {
 				if ($id !== 'site') {
 					return false;
@@ -60,5 +64,15 @@ class Menu
 				return true;
 			},
 		];
+
+		if ($label) {
+			$data['label'] = t($label, $label);
+		}
+
+		if ($icon) {
+			$data['icon'] = $icon;
+		}
+
+		return $data;
 	}
 }
