@@ -26,7 +26,7 @@ class Menu
 	public static function page(string $label, string $icon = null, string|Page $link = null, Closure|bool $current = null): array
 	{
 		if ($link instanceof Page) {
-			$link = $link->panel()->url();
+			$link = $link->panel()->path();
 		}
 
 		if (is_null($link)) {
