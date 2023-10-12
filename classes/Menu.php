@@ -23,9 +23,10 @@ class Menu
 		return static::$path ??= App::instance()->request()->path()->toString();
 	}
 
-	public static function page(string $label, string $icon = null, string|Page $link = null, Closure|bool $current = null): array
+	public static function page(string $label = null, string $icon = null, string|Page $link = null, Closure|bool $current = null): array
 	{
 		if ($link instanceof Page) {
+			$page = $link;
 			$link = $link->panel()->path();
 		}
 
@@ -34,7 +35,7 @@ class Menu
 		}
 
 		$data = [
-			'label' => t($label, $label),
+			'label' => $label || !isset($page) ? t($label, $label) : $page->title()->value(),
 			'link' => $link,
 			'current' => $current ?? fn () =>
 			str_contains(static::path(), $link)
