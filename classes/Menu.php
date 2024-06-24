@@ -5,6 +5,7 @@ namespace tobimori\Spielzeug;
 use Closure;
 use Kirby\Cms\App;
 use Kirby\Cms\Page;
+use Kirby\Cms\Pages;
 
 /**
  * Helper class for customizing the panel menu
@@ -14,15 +15,38 @@ use Kirby\Cms\Page;
  */
 class Menu
 {
-	public static array $pages = [];
+	protected static array $favorites = [];
+	protected static array $pages = [];
 
-	public static string $path;
-
+	/**
+	 * Returns the current panel request path
+	 */
 	public static function path(): string
 	{
-		return static::$path ??= App::instance()->request()->path()->toString();
+		return App::instance()->request()->path()->toString();
 	}
 
+	/**
+	 * Internal method to determine current state
+	 */
+	protected static function isCurrent(string|null $link, array ...$ignore): bool
+	{
+		if ($link && !str_contains(static::path(), $link)) {
+			return false;
+		}
+
+		foreach (array_merge(...$ignore) as $page) {
+			if (str_contains(static::path(), $page)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Returns the panel.menu option for a specific link or page, ignores all favorites
+	 */
 	public static function page(string $label = null, string $icon = null, string|Page $link = null, Closure|bool $current = null): array
 	{
 		if ($link instanceof Page) {
@@ -35,35 +59,25 @@ class Menu
 		}
 
 		$data = [
-			'label' => $label || !isset($page) ? t($label, $label) : $page->title()->value(),
-			'link' => $link,
-			'current' => $current ?? fn () =>
-			str_contains(static::path(), $link)
+			'label' => $label ?? ($page->title()->value() ?? ''),
+			'link' => static::$pages[] = $link,
+			'current' => $current ?? fn () => static::isCurrent($link, static::$favorites),
 		];
 
 		if ($icon) {
 			$data['icon'] = $icon;
 		}
 
-		return static::$pages[] = $data;
+		return $data;
 	}
 
+	/**
+	 * Returns the site panel.menu option, ignores all custom pages
+	 */
 	public static function site(string $label = null, string $icon = null): array
 	{
 		$data = [
-			'current' => function (string $id = null) {
-				if ($id !== 'site') {
-					return false;
-				}
-
-				foreach (static::$pages as &$page) {
-					if (str_contains(static::path(), $page['link'])) {
-						return false;
-					}
-				}
-
-				return true;
-			},
+			'current' => fn (string $id = null) => $id === 'site' && static::isCurrent(null, static::$favorites, static::$pages),
 		];
 
 		if ($label) {
@@ -72,6 +86,30 @@ class Menu
 
 		if ($icon) {
 			$data['icon'] = $icon;
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Registers a Pages collection as users favorites,
+	 * and returns an array to be used inside the panel.menu option
+	 */
+	public static function favorites(Pages $favorites): array
+	{
+		$data = [];
+
+		foreach ($favorites as $fav) {
+			$data["favorites/{$fav->uuid()->id()}"] = [
+				'label' => $fav->title(),
+				'icon' => 'star',
+				'link' => static::$favorites[] = $link = $fav->panel()->path(),
+				'current' => fn () => static::isCurrent($link),
+			];
+		}
+
+		if (!empty($data)) {
+			$data[] = '-';
 		}
 
 		return $data;
