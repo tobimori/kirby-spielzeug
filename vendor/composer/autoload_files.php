@@ -6,9 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    '6e3fae29631ef280660b3cdad06f25a8' => $vendorDir . '/symfony/deprecation-contracts/function.php',
-    '320cde22f66dd4f5d3fd621d3e88b98f' => $vendorDir . '/symfony/polyfill-ctype/bootstrap.php',
-    '04c6c5c2f7095ccf6c481d3e53e1776f' => $vendorDir . '/mustangostang/spyc/Spyc.php',
-    '8d45f37583b137896354a61f45ecc27e' => $vendorDir . '/bnomei/autoloader-for-kirby/helpers.php',
     '5ff9e52060a04b78334d6999b9cf9d4e' => $baseDir . '/helpers.php',
 );

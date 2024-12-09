@@ -7,9 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'tobimori\\Spielzeug\\' => array($baseDir . '/classes'),
-    'Symfony\\Polyfill\\Ctype\\' => array($vendorDir . '/symfony/polyfill-ctype'),
-    'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
-    'Symfony\\Component\\Finder\\' => array($vendorDir . '/symfony/finder'),
     'Kirby\\' => array($vendorDir . '/getkirby/composer-installer/src'),
-    'Bnomei\\' => array($vendorDir . '/bnomei/autoloader-for-kirby/classes'),
 );

@@ -1,7 +1,7 @@
 {
   "name": "tobimori/kirby-spielzeug",
   "description": "The helping hand for my Kirby Baukasten starterkit - Useful helpers & tools I use for my projects",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "type": "kirby-plugin",
   "keywords": [
     "kirby",
@@ -18,11 +18,7 @@
   "minimum-stability": "beta",
   "require": {
     "php": ">=8.2.0",
-    "getkirby/composer-installer": "^1.2",
-    "bnomei/autoloader-for-kirby": "^4.0"
-  },
-  "require-dev": {
-    "getkirby/cms": "^4.0"
+    "getkirby/composer-installer": "^1.2"
   },
   "scripts": {
     "dist": "composer install --no-dev --optimize-autoloader"
