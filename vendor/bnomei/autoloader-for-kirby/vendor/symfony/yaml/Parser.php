@@ -561,7 +561,7 @@ class Parser
      *
      * @throws ParseException When indentation problem are detected
      */
-    private function getNextEmbedBlock(int $indentation = null, bool $inSequence = false): string
+    private function getNextEmbedBlock(?int $indentation = null, bool $inSequence = false): string
     {
         $oldLineIndentation = $this->getCurrentLineIndentation();
 
@@ -638,12 +638,12 @@ class Parser
             }
 
             if ($this->isCurrentLineBlank()) {
-                $data[] = substr($this->currentLine, $newIndent);
+                $data[] = substr($this->currentLine, $newIndent ?? 0);
                 continue;
             }
 
             if ($indent >= $newIndent) {
-                $data[] = substr($this->currentLine, $newIndent);
+                $data[] = substr($this->currentLine, $newIndent ?? 0);
             } elseif ($this->isCurrentLineComment()) {
                 $data[] = $this->currentLine;
             } elseif (0 == $indent) {
@@ -1043,7 +1043,7 @@ class Parser
      *
      * @internal
      */
-    public static function preg_match(string $pattern, string $subject, array &$matches = null, int $flags = 0, int $offset = 0): int
+    public static function preg_match(string $pattern, string $subject, ?array &$matches = null, int $flags = 0, int $offset = 0): int
     {
         if (false === $ret = preg_match($pattern, $subject, $matches, $flags, $offset)) {
             throw new ParseException(preg_last_error_msg());

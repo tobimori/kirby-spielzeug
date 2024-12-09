@@ -38,8 +38,7 @@ final class Autoloader
 
     public const ANY_PHP_OR_YML_OR_JSON = '/^[\w\d\-\_\.]+\.(php|yml|json)$/';
 
-    /** @var self */
-    private static $singleton;
+    private static ?self $singleton = null;
 
     /** @var array */
     private $options;
@@ -49,7 +48,7 @@ final class Autoloader
 
     public function __construct(array $options = [])
     {
-        $this->options = array_merge_recursive([
+        $this->options = self::array_merge_recursive_distinct([
             // we can not read the kirby options since we are loading
             // while kirby is booting, but once spyc is removed we can
             // default to symfony yaml
@@ -178,7 +177,7 @@ final class Autoloader
         }
 
         $this->registry[$type] = [];
-        $finder = (new Finder())->files()
+        $finder = (new Finder)->files()
             ->name($options['name'])
             ->in($dir);
 
@@ -232,8 +231,8 @@ final class Autoloader
             } elseif ($options['key'] === 'route') {
                 // Author: @tobimori
                 $pattern = strtolower($file->getRelativePathname());
-                $pattern = preg_replace('~(.*)'.preg_quote('.php', '~').'~', '$1'.'', $pattern, 1); // replace extension at end
-                $pattern = preg_replace('~(.*)'.preg_quote('index', '~').'~', '$1'.'', $pattern, 1); // replace index at end, for root of folder, but not in paths etc.
+                $pattern = (string) preg_replace('~(.*)'.preg_quote('.php', '~').'~', '$1'.'', $pattern, 1); // replace extension at end
+                $pattern = (string) preg_replace('~(.*)'.preg_quote('index', '~').'~', '$1'.'', $pattern, 1); // replace index at end, for root of folder, but not in paths etc.
 
                 $route = require $file->getRealPath();
 
@@ -259,11 +258,11 @@ final class Autoloader
                 $this->registry[$type][$key] = include $path; // require will link, include will read
             } elseif ($options['require'] && $extension && strtolower($extension) === 'json') {
                 $path = $file->getPathname();
-                $this->registry[$type][$key] = json_decode(file_get_contents($path), true);
+                $this->registry[$type][$key] = json_decode((string) file_get_contents($path), true);
             } elseif ($options['require'] && $extension && strtolower($extension) === 'yml') {
                 $path = $file->getPathname();
                 // remove BOM
-                $yaml = str_replace("\xEF\xBB\xBF", '', file_get_contents($path));
+                $yaml = str_replace("\xEF\xBB\xBF", '', (string) file_get_contents($path));
                 if ($this->options['yaml.handler'] === 'symfony') {
                     $this->registry[$type][$key] = Yaml::parse($yaml);
                 } else {
@@ -299,6 +298,9 @@ final class Autoloader
 
             // load blueprints from classes
             foreach ($map as $class => $file) {
+                if (! is_string($class)) {
+                    continue;
+                }
                 // if instance of class has static method registerBlueprintExtension
                 if (class_exists($class) && method_exists($class, 'blueprintFromAttributes')) {
                     // register blueprints now, using and empty array would prevent the loading later
@@ -420,9 +422,39 @@ final class Autoloader
         return array_merge_recursive($this->registry, $merge);
     }
 
-    public function pascalToKebabCase(string $string): string
+    public static function pascalToKebabCase(string $string): string
     {
-        return ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '-$0', $string)), '-');
+        return ltrim(strtolower((string) preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '-$0', $string)), '-');
+    }
+
+    public static function pascalToCamelCase(string $string): string
+    {
+        return lcfirst($string);
+    }
+
+    public static function pascalToDotCase(string $string): string
+    {
+        return ltrim(strtolower((string) preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '.$0', $string)), '.');
+    }
+
+    public static function array_merge_recursive_distinct(array $array1, array $array2)
+    {
+        $merged = $array1;
+
+        foreach ($array2 as $key => $value) {
+            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+                $merged[$key] = self::array_merge_recursive_distinct($merged[$key], $value);
+            } else {
+                $merged[$key] = $value;
+            }
+        }
+
+        return $merged;
+    }
+
+    public static function singletonClear(): void
+    {
+        self::$singleton = null;
     }
 
     public static function singleton(array $options = []): self
@@ -450,7 +482,7 @@ final class Autoloader
             $class = strtolower($class);
 
             if (! isset($classmap[$class])) {
-                return false;
+                return;
             }
 
             if ($base) {
