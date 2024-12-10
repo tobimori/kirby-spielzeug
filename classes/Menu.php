@@ -47,7 +47,7 @@ class Menu
 	/**
 	 * Returns the panel.menu option for a specific link or page, ignores all favorites
 	 */
-	public static function page(string $label = null, string $icon = null, string|Page $link = null, Closure|bool $current = null): array
+	public static function page(string|null $label = null, string|null $icon = null, string|Page|null $link = null, Closure|bool|null $current = null): array
 	{
 		if ($link instanceof Page) {
 			$page = $link;
@@ -61,7 +61,7 @@ class Menu
 		$data = [
 			'label' => $label ?? ($page->title()->value() ?? ''),
 			'link' => static::$pages[] = $link,
-			'current' => $current ?? fn () => static::isCurrent($link, static::$favorites),
+			'current' => $current ?? fn() => static::isCurrent($link, static::$favorites),
 		];
 
 		if ($icon) {
@@ -74,10 +74,10 @@ class Menu
 	/**
 	 * Returns the site panel.menu option, ignores all custom pages
 	 */
-	public static function site(string $label = null, string $icon = null): array
+	public static function site(string|null $label = null, string|null $icon = null): array
 	{
 		$data = [
-			'current' => fn (string $id = null) => $id === 'site' && static::isCurrent(null, static::$favorites, static::$pages),
+			'current' => fn(string $id = null) => $id === 'site' && static::isCurrent(null, static::$favorites, static::$pages),
 		];
 
 		if ($label) {
@@ -104,7 +104,7 @@ class Menu
 				'label' => $fav->title(),
 				'icon' => 'star',
 				'link' => static::$favorites[] = $link = $fav->panel()->path(),
-				'current' => fn () => static::isCurrent($link),
+				'current' => fn() => static::isCurrent($link),
 			];
 		}
 
