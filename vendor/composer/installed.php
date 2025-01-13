@@ -20,8 +20,8 @@
             'dev_requirement' => false,
         ),
         'tobimori/kirby-spielzeug' => array(
-            'pretty_version' => '2.4.1',
-            'version' => '2.4.1.0',
+            'pretty_version' => '2.4.2',
+            'version' => '2.4.2.0',
             'reference' => null,
             'type' => 'kirby-plugin',
             'install_path' => __DIR__ . '/../../',
