@@ -31,7 +31,7 @@ function firstExistingFile(array $files): string|false
 /**
  * Returns a file path by absolute or relative path with using localized file options
  */
-function localizedFile(string $file, string $type, string $locale = null): string|false
+function localizedFile(string $file, string $type, ?string $locale = null): string|false
 {
 
   if (!is_string($file)) {
@@ -50,7 +50,7 @@ function localizedFile(string $file, string $type, string $locale = null): strin
 /**
  * Returns Asset object by absolute or relative path with using localized file options
  */
-function localizedAsset(string $file, string $type, string $locale = null): Asset|false
+function localizedAsset(string $file, string $type, ?string $locale = null): Asset|false
 {
   if (!is_string($file)) {
     return false;
@@ -73,7 +73,7 @@ function localizedAsset(string $file, string $type, string $locale = null): Asse
 /**
  * Returns the SVG files' path to be used with an img Tag 
  */
-function localizedSvgUrl(string $file, string $locale = null): string|false
+function localizedSvgUrl(string $file, ?string $locale = null): string|false
 {
   return localizedFile($file, 'svg', $locale);
 }
@@ -81,7 +81,7 @@ function localizedSvgUrl(string $file, string $locale = null): string|false
 /**
  * Includes an SVG file by absolute or relative path with using localized file options
  */
-function localizedSvg(string $file, string $locale = null): string|false
+function localizedSvg(string $file, ?string $locale = null): string|false
 {
   return ($filePath = localizedSvgUrl($file, $locale)) ? F::read($filePath) : false;
 }
