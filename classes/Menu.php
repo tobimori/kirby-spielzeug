@@ -29,7 +29,7 @@ class Menu
 	/**
 	 * Internal method to determine current state
 	 */
-	protected static function isCurrent(string|null $link, array ...$ignore): bool
+	protected static function isCurrent(?string $link, array ...$ignore): bool
 	{
 		if ($link && !str_contains(static::path(), $link)) {
 			return false;
@@ -47,7 +47,7 @@ class Menu
 	/**
 	 * Returns the panel.menu option for a specific link or page, ignores all favorites
 	 */
-	public static function page(string|null $label = null, string|null $icon = null, string|Page|null $link = null, Closure|bool|null $current = null): array
+	public static function page(?string $label = null, ?string $icon = null, string|Page|null $link = null, Closure|bool|null $current = null): array
 	{
 		if ($link instanceof Page) {
 			$page = $link;
@@ -74,10 +74,10 @@ class Menu
 	/**
 	 * Returns the site panel.menu option, ignores all custom pages
 	 */
-	public static function site(string|null $label = null, string|null $icon = null): array
+	public static function site(?string $label = null, ?string $icon = null): array
 	{
 		$data = [
-			'current' => fn(string $id = null) => $id === 'site' && static::isCurrent(null, static::$favorites, static::$pages),
+			'current' => fn(?string $id = null) => $id === 'site' && static::isCurrent(null, static::$favorites, static::$pages),
 		];
 
 		if ($label) {
