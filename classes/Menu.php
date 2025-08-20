@@ -45,6 +45,60 @@ class Menu
 	}
 
 	/**
+	 * Check if current path matches this specific page
+	 * Uses longest prefix matching to handle infinite nesting
+	 */
+	protected static function isCurrentPage(?string $link, array ...$ignore): bool
+	{
+		$currentPath = static::path();
+		
+		$panelSlug = App::instance()->option('panel.slug', 'panel');
+		if (str_starts_with($currentPath, $panelSlug . '/')) {
+			$currentPath = substr($currentPath, strlen($panelSlug) + 1);
+		}
+		
+		foreach (array_merge(...$ignore) as $page) {
+			if (str_contains($currentPath, $page)) {
+				return false;
+			}
+		}
+		
+		if (!$link) {
+			return false;
+		}
+		
+		$isPrefix = false;
+		
+		if ($currentPath === $link) {
+			$isPrefix = true;
+		} elseif (str_starts_with($currentPath, $link . '+')) {
+			$isPrefix = true;
+		} elseif (str_starts_with($currentPath, $link . '/')) {
+			$isPrefix = true;
+		}
+		
+		if (!$isPrefix) {
+			return false;
+		}
+		
+		foreach (static::$pages as $menuPage) {
+			if ($menuPage === $link) {
+				continue;
+			}
+			
+			if ($currentPath === $menuPage || 
+				str_starts_with($currentPath, $menuPage . '+') || 
+				str_starts_with($currentPath, $menuPage . '/')) {
+				if (strlen($menuPage) > strlen($link)) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+
+	/**
 	 * Returns the panel.menu option for a specific link or page, ignores all favorites
 	 */
 	public static function page(?string $label = null, ?string $icon = null, string|Page|null $link = null, Closure|bool|null $current = null): array
@@ -61,7 +115,7 @@ class Menu
 		$data = [
 			'label' => $label ?? ($page->title()->value() ?? ''),
 			'link' => static::$pages[] = $link,
-			'current' => $current ?? fn() => static::isCurrent($link, static::$favorites),
+			'current' => $current ?? fn() => static::isCurrentPage($link, static::$favorites),
 		];
 
 		if ($icon) {
